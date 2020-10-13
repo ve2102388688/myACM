@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 
-
+// 最大测试次数
 const int MAX_ITERATORS = 2;
 
 // 针对两个long long相乘可能导致溢出
+// (ab)%mod
 long long multiplyMod(long long a, long long b, long long mod) {
     long long x = 0, y = a % mod;
     while (b) {
@@ -32,21 +33,22 @@ long long modulo(long long a, long long b, long long mod) {
 bool isPrime(long long p) {
     if (p < 2)
         return false;
-    if (p == 2)
+    if (p == 2)                 // 把2排除
         return false;
-    if (!(p & 1))
+    if (!(p & 1))               // 偶数肯定不是素数
         return false;
 
+    /// 满足等式的最大q
     long long q = p - 1;
     while (!(q & 1)) q >>= 1;       // p-1=2^t*q
 
 
     for (size_t i = 0; i < MAX_ITERATORS; i++) {
-        long long a = rand() % (p - 1) + 1;
+        long long a = rand() % (p - 1) + 1;         // 从(1,p)随机选择一个证人
         long long t = q;
-        long long mod = modulo(a, t, p);
+        long long mod = modulo(a, t, p);            // mod = a^t%p
         while (t!=p-1 && mod!=1 && mod!=p-1) {
-            mod = multiplyMod(mod, mod, p);
+            mod = multiplyMod(mod, mod, p);         // 二次探测定理
             t <<= 1;
         }
         if (mod != p - 1 && !(t & 1))
